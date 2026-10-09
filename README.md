@@ -2,7 +2,9 @@
 
 You are given a small, working, **smelly** implementation of Connect Four in `ConnectFour.h` / `ConnectFour.cpp`, with tests in `test.cpp`.
 
-It works, but it is hard to read and hard to change:
+It works, but it is hard to read and hard to change
+
+Also the logic has a couple of serious limitations:
 
 * `winner()` only recognises **horizontal** lines of four.
 * The move choice is primitive: *win if you can, otherwise play anywhere*.
