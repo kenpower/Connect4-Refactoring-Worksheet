@@ -3,5 +3,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+    <File Path="smells.md" />
+  </Folder>
   <Project Path="Connect4-Tests/Connect4-Tests.vcxproj" />
 </Solution>
