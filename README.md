@@ -15,8 +15,8 @@ You will switch between two kinds of work. Each step is labelled with the hat it
 
 |Hat|What you're doing|What the tests should do|
 |-|-|-|
-|🔧 **Refactoring**|Changing the *structure* of the code, not its behaviour|Stay **green** the whole time|
-|🏗️ **Development**|Changing *behaviour* (new feature or new rule)|Write a test that goes **red**, then make it **green**|
+|**Refactoring**|Changing the *structure* of the code, not its behaviour|Stay **green** the whole time|
+|**Development**|Changing *behaviour* (new feature or new rule)|Write a test that goes **red**, then make it **green**|
 
 Never wear both hats at once. If you are refactoring and a test goes red, you have changed behaviour by accident: **undo** and take a smaller step.
 
@@ -62,11 +62,11 @@ If your code gets into a mess, ask for the **checkpoint** code for the section y
 
 Build and run the tests **before changing anything**.
 
-The tests use **GoogleTest**. Open the project, build it, and run all the tests (in Visual Studio: **Test → Run All Tests**, then look in **Test Explorer**).
+The tests use **GoogleTest**. Open the project, build it, open **TestExplorer** and run all the tests (in Visual Studio: **Test → Run All Tests**, then look in **Test Explorer**).
 
 All **14** tests should pass. **If they don't, ask for help before going any further.**
 
-> 💡 Each test looks like `TEST(WinnerTest, ThreeInARowIsNotAWin) { ... }`. The first name groups related tests together; the second says what the test checks. When a test fails, GoogleTest shows you both names, the line, and the expected and actual values.
+> Each test looks like `TEST(WinnerTest, ThreeInARowIsNotAWin) { ... }`. The first name groups related tests together; the second says what the test checks. When a test fails, GoogleTest shows you both names, the line, and the expected and actual values.
 
 \---
 
@@ -104,20 +104,19 @@ Do these **one at a time**. After **each** one:
 
 In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to rename it everywhere it's used, including in `test.cpp`. Renaming by hand is how bugs creep in.
 
-* \[ ] **2.1** `move()` doesn't say what it does. Rename it to `bestMoveFor()`.
-* \[ ] **2.2** In `play()`, rename the parameters `c` → `column` and `p` → `player`. Do the same for `p` in `bestMoveFor()`.
-* \[ ] **2.3** In `bestMoveFor()`, the loop variable `i` isn't just a counter: it's a **column** the player might drop a piece into. Rename it to `column` (in both loops).
-* \[ ] **2.4** In `play()`, rename `r` → `row` and `b` → `newBoard`.
-* \[ ] **2.5** `-1` is a flag meaning "there is no move". Add a constant to the class and use it in place of the `-1`. In `test.cpp`, change the `-1` in `FullBoardHasNoMove` to `ConnectFour::NoMove`.
+- [ ] **2.1** `move()` doesn't say what it does. Rename it to `bestMoveFor()`.
+- [ ] **2.2** In `play()`, rename the parameters `c` → `column` and `p` → `player`. Do the same for `p` in `bestMoveFor()`.
+- [ ] **2.3** In `bestMoveFor()`, the loop variable `i` isn't just a counter: it's a **column** the player might drop a piece into. Rename it to `column` (in both loops).
+- [ ] **2.4** In `play()`, rename `r` → `row` and `b` → `newBoard`.
+- [ ] **2.5** `-1` is a flag meaning "there is no move". Add a constant to the class and use it in place of the `-1`. In `test.cpp`, change the `-1` in `FullBoardHasNoMove` to `ConnectFour::NoMove`.
 
 ```cpp
-  static constexpr int NoMove = -1;
+  static const int NoMove = -1;
   ```
 
-> ⚠️ Use `constexpr`, not plain `const`. With `static const int`, `EXPECT\_EQ(..., ConnectFour::NoMove)` can fail to \*\*link\*\* ("undefined reference to `ConnectFour::NoMove`") on some compilers.
 
-* \[ ] **2.6** `'-'` means "empty cell". Add `static constexpr char Empty = '-';` and use it everywhere `'-'` is used in `ConnectFour.cpp`.
-* \[ ] **2.7** The expression `r \* 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
+- [ ] **2.6** `'-'` means "empty cell". Add a constant for `Empty` and use it everywhere `'-'` is used in `ConnectFour.cpp`.
+- [ ] **2.7** The expression `r \* 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
 
 ```cpp
   int indexOf(int row, int column) const;
@@ -125,7 +124,7 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
 
   and use it in `play()` and `winner()`.
 
-* \[ ] **2.8** In `bestMoveFor()`, `board\[column] == Empty` checks only *one* cell, yet it is really asking a question about the whole column. 🤔 **Which cell is it checking, and why is that enough?** Extract it into a private method with a name that says what it *means*:
+- [ ] **2.8** In `bestMoveFor()`, `board\[column] == Empty` checks only *one* cell, yet it is really asking a question about the whole column. 🤔 **Which cell is it checking, and why is that enough?** Extract it into a private method with a name that says what it *means*:
 
   ```cpp
   bool canPlayIn(int column) const;
@@ -133,7 +132,7 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
 
   Use it in **both** loops.
 
-* \[ ] **2.9** What does the object `t` represent? Give it a name that says so. (Hint: it's the game *after* something has happened.)
+- [ ] **2.9** What does the object `t` represent? Give it a name that says so. (Hint: it's the game *after* something has happened.)
 
   > 📌 \*\*Checkpoint 1.\*\* Compare your code with a neighbour's. Are your names the same? Does it matter if they're different?
 
@@ -144,21 +143,21 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
   After the easy changes, `bestMoveFor()` should look roughly like this:
 
   ```cpp
-int ConnectFour::bestMoveFor(char player) const {
-    for (int column = 0; column < 7; column++) {          // loop 1: look for a win
-        if (canPlayIn(column)) {
-            ConnectFour afterMove = play(column, player);
-            if (afterMove.winner() == player)
+    int ConnectFour::bestMoveFor(char player) const {
+        for (int column = 0; column < 7; column++) {          // loop 1: look for a win
+            if (canPlayIn(column)) {
+                ConnectFour afterMove = play(column, player);
+                if (afterMove.winner() == player)
+                    return column;
+            }
+        }
+        for (int column = 0; column < 7; column++) {          // loop 2: any legal move
+            if (canPlayIn(column))
                 return column;
         }
+        return NoMove;
     }
-    for (int column = 0; column < 7; column++) {          // loop 2: any legal move
-        if (canPlayIn(column))
-            return column;
-    }
-    return NoMove;
-}
-```
+    ```
 
   Both loops visit the same seven columns. **Fusing** them means combining them into one loop. You can't just paste one into the other, though, because **both loops `return` early**. A loop that returns early stops the code after it from ever running, so moving it changes behaviour.
 
@@ -168,7 +167,7 @@ int ConnectFour::bestMoveFor(char player) const {
 
   ### Step 3.1 🔧: loop 2 records its answer instead of returning it
 
-  ```cpp
+```cpp
     int defaultMove = NoMove;
     for (int column = 0; column < 7; column++) {
         if (canPlayIn(column) \&\& defaultMove == NoMove)
@@ -181,7 +180,7 @@ int ConnectFour::bestMoveFor(char player) const {
 
   ### Step 3.2 🔧: loop 1 does the same
 
-  ```cpp
+```cpp
     int winningMove = NoMove;
     for (int column = 0; column < 7; column++) {
         if (canPlayIn(column) \&\& winningMove == NoMove) {
@@ -202,11 +201,11 @@ int ConnectFour::bestMoveFor(char player) const {
 
   🤔 The original code had a third line, `return NoMove;`. Why don't we need it? Run the tests: green? Commit.
 
-  ### Step 3.3 🔧: fuse
+  ### Step 3.3 : fuse
 
   The two loops now have the same header and no early exits, so it's safe. Move the body of loop 2 into loop 1 and delete loop 2. Run the tests: green? Commit.
 
-  ### Step 3.4 🏗️: change of hat. Simplify the default move
+  ### Step 3.4 : change of hat. Simplify the default move
 
   The rules only say *"if you can't win, play **any** legal move"*. We don't care **which** one. So the `defaultMove == NoMove` guard is doing work nobody asked for. **Delete it** (keep `canPlayIn(column)`).
 
@@ -220,7 +219,7 @@ int ConnectFour::bestMoveFor(char player) const {
 
   Green again? Commit.
 
-  ### Step 3.5 🔧: one variable, one exit
+  ### Step 3.5 : one variable, one exit
 
   You now have two variables and some `if`s to choose between them. Simplify to a **single** `result` variable:
 
@@ -245,7 +244,7 @@ int ConnectFour::bestMoveFor(char player) const {
 
   Add these to the class:
 
-  ```cpp
+```cpp
 static constexpr int Rows = 6;
 static constexpr int Columns = 7;
 static constexpr int WinLength = 4;
@@ -255,17 +254,17 @@ static constexpr int WinLength = 4;
 
 * every `7` → `Columns`
 * the `6` in `winner()` → `Rows`
-* the `5` in `play()` → ? 🤔 (*It's the bottom row. How do you write that using `Rows`?*)
+* the `5` in `play()` → ?  (*It's the bottom row. How do you write that using `Rows`?*)
 
   Then look at `c < 4` in `winner()`.
 
-  > 🤔 \*\*Careful!\*\* Is that `4` the same thing as `WinLength`? Try it with a bigger board: on a 10-column board, what should the limit be? It's actually `Columns - WinLength + 1`, which just \*happens\* to equal 4 here. One literal hiding two different meanings is exactly why magic numbers are dangerous.
+  > \*\*Careful!\*\* Is that `4` the same thing as `WinLength`? Try it with a bigger board: on a 10-column board, what should the limit be? It's actually `Columns - WinLength + 1`, which just \*happens\* to equal 4 here. One literal hiding two different meanings is exactly why magic numbers are dangerous.
 
   ### Step 4.2: remove the X/O duplication
 
   Add a helper that reads a cell:
 
-  ```cpp
+```cpp
 char cellAt(int row, int column) const;   // returns board\[indexOf(row, column)]
 ```
 
@@ -283,7 +282,7 @@ if (first != Empty \&\& cellAt(row, column + 1) == first \&\& /\* ... \*/)
 
   The `+1`, `+2`, `+3` offsets are really "step 1, 2, 3 along the line". Extract a method that checks **one line of `WinLength` cells**, starting at a cell and stepping in a direction:
 
-  ```cpp
+```cpp
 // Returns the player who owns this whole line, or Empty if nobody does.
 char lineOwner(int row, int column, int rowStep, int columnStep) const;
 ```
@@ -447,7 +446,6 @@ Put these in a new `ScoringTest` group.
 
 * **Prefer the centre.** Pieces in the middle columns take part in more possible lines. Among moves with equal scores, prefer the column nearest the centre. Can you do it by changing `scoreMove()` only? Which tests do you need to write first?
 * **Double threats.** A move that leaves you **two** different winning columns can't be blocked. Score it 90.
-* **Strategy pattern.** Pull the scoring rules out into a `MoveScorer` interface so different players can use different strategies. What has to change in `ConnectFour` to allow that?
 
   \---
 
@@ -460,7 +458,6 @@ Put these in a new `ScoringTest` group.
   # Submission
 
 1. **One person in the pair** pushes the project to the GitHub repo.
-2. **Both people** upload `ConnectFour.h`, `ConnectFour.cpp` and `test.cpp` to the Blackboard "Refactoring Lab" assignment on their **own** account.
 3. **Each person** answers **four** of the following questions in the Blackboard submission:
 
    1. **Collaboration:** What did you learn about working together with your partner? Were there any challenges you faced?

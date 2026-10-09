@@ -7,10 +7,14 @@
 
 // Builds a 42-character board from six rows, TOP row first.
 // Writing boards this way lets you "see" them in the test.
-static std::string rows(const std::string& r0, const std::string& r1,
-    const std::string& r2, const std::string& r3,
-    const std::string& r4, const std::string& r5) {
-    return r0 + r1 + r2 + r3 + r4 + r5;
+static std::string rows(
+    const std::string& r0, 
+    const std::string& r1,
+    const std::string& r2, 
+    const std::string& r3,
+    const std::string& r4, 
+    const std::string& r5) {
+        return r0 + r1 + r2 + r3 + r4 + r5;
 }
 
 static std::string emptyBoard() {
@@ -27,7 +31,8 @@ static std::string emptyBoard() {
 TEST(PlayTest, DropsPieceToBottomRow) {
     ConnectFour game(emptyBoard());
     ConnectFour after = game.play(3, 'X');
-    EXPECT_EQ(after.getBoard(), rows("-------",
+    EXPECT_EQ(after.getBoard(), 
+        rows("-------",
         "-------",
         "-------",
         "-------",

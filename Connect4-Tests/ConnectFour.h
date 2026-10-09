@@ -15,5 +15,6 @@ public:
     std::string getBoard() const;
 
 private:
+    static const int x = 1;
     std::string board;
 };
