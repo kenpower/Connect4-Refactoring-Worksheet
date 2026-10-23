@@ -1,3 +1,6 @@
+Class code: REFACTORING_26
+Lab: refactor
+
 # Refactoring Lab: Connect Four
 
 You are given a small, working, **smelly** implementation of Connect Four in `ConnectFour.h` / `ConnectFour.cpp`, with tests in `test.cpp`.
