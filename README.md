@@ -61,7 +61,6 @@ In the tests, the `rows(...)` helper lets you write boards exactly like this.
 |5. More ways to win|Core|20 min|
 |6. A smarter player|**Stretch**|40+ min|
 
-If your code gets into a mess, ask for the **checkpoint** code for the section you have just finished and carry on from there.
 
 \---
 
