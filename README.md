@@ -4,12 +4,14 @@ You are given a small, working, **smelly** implementation of Connect Four in `Co
 
 It works, but it is hard to read and hard to change
 
-Also the logic has a couple of serious limitations:
+Also the logic has a couple of **serious** limitations:
 
-* `winner()` only recognises **horizontal** lines of four.
-* The move choice is primitive: *win if you can, otherwise play anywhere*.
+* `winner()` only recognises **horizontal** lines of four (vertical or diagonals are not wins!).
+* The AI move choice is naïve: *win if you can, otherwise play anywhere*.
 
-Your job is to **refactor** the code (make it clearer without changing what it does) until adding the missing features becomes easy. Then you add them.
+Your job is to:
+1. **refactor** the code (make it clearer without changing what it does) until adding the missing features becomes easy.
+2. Then you use TDD to add the missing features (proper win test, smarter move choice).
 
 ### The two hats
 
@@ -63,6 +65,8 @@ If your code gets into a mess, ask for the **checkpoint** code for the section y
 ## 0\. Setup
 
 Build and run the tests **before changing anything**.
+
+Do not type any code until you see a green tests
 
 The tests use **GoogleTest**. Open the project, build it, open **TestExplorer** and run all the tests (in Visual Studio: **Test → Run All Tests**, then look in **Test Explorer**).
 
