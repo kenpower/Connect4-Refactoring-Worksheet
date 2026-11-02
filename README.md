@@ -95,7 +95,7 @@ All **14** tests should pass. **If they don't, ask for help before going any fur
 
 ---
 
-## 1. Smells 🔍
+## 1. Smells
 
 A *smell* is something in the code that makes it harder to understand or change. Read all of `ConnectFour.cpp` together. For each method, can you say in one sentence what it does? For each loop, can you say what it loops over *in game terms* (rows? columns? cells?)
 
@@ -188,7 +188,7 @@ int ConnectFour::bestMoveFor(char player) const {
 
 Both loops visit the same seven columns. **Fusing** them means combining them into one loop. You can't just paste one into the other, though, because **both loops `return` early**. A loop that returns early stops the code after it from ever running, so moving it changes behaviour.
 
-> 💡 **When is it safe to fuse two loops?** When they loop over the same range, and **neither** loop exits early or depends on something the other loop works out.
+> **When is it safe to fuse two loops?** When they loop over the same range, and **neither** loop exits early or depends on something the other loop works out.
 
 So first remove the early exits, one loop at a time. **Tests must stay green after every step.**
 
@@ -268,7 +268,7 @@ The whole method should now fit in about 10 lines. Run the tests: green? Commit.
 
 Every step in this section is **[Refactor]**.
 
-Look back at your smell list. 🤔 **Which part of the code smells worst now?**
+Look back at your smell list. **Which part of the code smells worst now?**
 
 It is probably `winner()`. It's full of magic numbers, and the `'X'` check and the `'O'` check are copies of each other.
 
@@ -329,7 +329,7 @@ bool isOnBoard(int row, int column) const;
 
 With that check in place, `winner()` can simply try **every** cell (`column < Columns`) and let `lineOwner()` reject lines that don't fit.
 
-> 🛡️ The test `WinnerTest.LineDoesNotWrapAroundTheEdge` protects you here. In the string, the last cell of one row sits right next to the first cell of the next. Forget the bounds check and that test goes red.
+> The test `WinnerTest.LineDoesNotWrapAroundTheEdge` protects you here. In the string, the last cell of one row sits right next to the first cell of the next. Forget the bounds check and that test goes red.
 
 Run the tests: green? Commit.
 
@@ -371,13 +371,13 @@ In `winner()`, loop over these directions and call `lineOwner()` for each. Run t
 
 > 🤔 **Reflect:** How many lines did you have to change to add three new ways to win? How many would it have taken in the original code?
 >
-> 🤔 Your teacher now wants **Connect Five** on a **9 × 7** board. What would you change?
+> 🤔 Your users now want **Connect Five** on a **9 × 7** board. What would you change?
 
 
 
 ---
 
-## 6. A smarter player: Stretch ⭐
+## 6. A smarter player
 
 So far, the player wins if it can and otherwise plays any legal move. It doesn't even notice when the opponent is about to win.
 
