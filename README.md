@@ -93,6 +93,28 @@ All **14** tests should pass. **If they don't, ask for help before going any fur
 
 > Each test looks like `TEST(WinnerTest, ThreeInARowIsNotAWin) { ... }`. The first name groups related tests together; the second says what the test checks. When a test fails, GoogleTest shows you both names, the line, and the expected and actual values.
 
+### Start RedGreenGo
+
+**RedGreenGo** is a game that coaches you through the lab. It watches your test runs, your code and your commits, and tells you when to run the tests, commit or undo. The helper that connects it to your project, `rgg_server.py`, is already in this repo.
+
+1. Open a terminal in the repo folder (the one with `CMakeLists.txt`):
+   * **Visual Studio:** *View → Terminal*.
+   * **VS Code:** *Terminal → New Terminal*.
+   * **CLion:** *View → Tool Windows → Terminal*.
+2. Start the helper and **leave it running**:
+
+   ```
+   python rgg_server.py
+   ```
+
+   On Windows, if that opens the Microsoft Store or says Python isn't found, use `py rgg_server.py`. On Linux, use `python3 rgg_server.py`. It reads the class code from the top of this README, so you don't need to type it.
+3. **Run all the tests** (as above). The game opens in your browser at **http://127.0.0.1:8000/**. Always play there, not on the github.io page, which can't see your code.
+4. Type both your names and click **Start Game**.
+
+The helper only reads your files; it never changes them. When the lab starts, the game asks you to find the smells yourselves first (section 1) before it shows its own list.
+
+> **Nothing happens when you run the tests?** Check the helper's terminal. If it says `doesn't save test results`, ask for help. If it says `No test results yet`, run **all** the tests through Test Explorer, the Testing view or **All CTest**: the game can't see a single test run from the ▶ next to a `TEST(...)`.
+
 ---
 
 ## 1. Smells
