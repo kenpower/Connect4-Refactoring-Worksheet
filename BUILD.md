@@ -124,4 +124,4 @@ Run the executable directly with `.\build\Debug\connect4_tests.exe` (RedGreenGo 
 
 **The tests compile but Test Explorer / the Testing view shows nothing.** Build first: tests are discovered by running the built executable. Then refresh the test view.
 
-**Linker errors mentioning `NoMove`, `Empty`, `Columns` etc.** Declare the constants as `static constexpr`, not `static const` (see step 2.5 in the README).
+**Linker errors mentioning `NoMove`, `Empty`, `Columns` etc.** Declare the constants as `static constexpr`, not `static const` (see step 2.3 in the README).

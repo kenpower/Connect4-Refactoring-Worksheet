@@ -3,7 +3,7 @@
 
 // A Connect Four position.
 // The board is a string of 42 characters: 6 rows of 7, TOP row first.
-// '-' is an empty cell, 'X' and 'O' are the players' pieces.
+// '-' is an empty cell; 'X' and 'O' are pieces.
 class ConnectFour {
 public:
     ConnectFour(const std::string& s);

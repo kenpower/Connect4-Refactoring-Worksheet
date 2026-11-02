@@ -28,6 +28,8 @@ You will switch between two kinds of work. Every step that changes code is label
 
 Never wear both hats at once. If you are refactoring and a test goes red, you have changed behaviour by accident: **undo** and take a smaller step.
 
+> 🎮 **Using RedGreenGo?** Before every **[Develop]** step, click **Changing what the code does on purpose?** and say what will change. Otherwise the game holds you when tests fail or change.
+
 ### How the board is stored
 
 The board is a `std::string` of 42 characters: 6 rows of 7, **top row first**. `'-'` is empty; `'X'` and `'O'` are pieces. Pieces drop to the lowest empty cell in a column.
@@ -57,28 +59,47 @@ rows("-------",
 
 * Work on **one machine** together. Only one of you needs the project built and running.
 * **Driver** types; **navigator** reads the instructions, thinks ahead and spots mistakes.
-* **Swap roles at the start of every section**: swap seats, not laptops.
-* **Commit after every green step** (`git commit -am "Rename move to bestMoveFor"`). Small commits mean that if you break something, you can always get back to the last green state.
+* **Swap roles after every commit**: swap seats, not laptops.
+* **Commit after every green step**, with a message that names the refactoring and what it changed:
+
+  ```
+  git commit -am "Rename Function: move -> bestMoveFor"
+  ```
+
+  For a **[Develop]** step, say what the code does now: `"Develop: any legal move, not just the first"`. Small commits mean that if you break something, you can always get back to the last green state.
+* **To undo**, throw away everything you've changed in the code since your last commit:
+
+  ```
+  git restore Connect4-Tests
+  ```
+
+  This only touches the code folder, so your notes in `smells.md` are safe. There's no way to get the discarded changes back, which is why you commit after every green step.
 
 ### Time guide
 
+The lab is **one hour**. Setup happens **before** the lab.
+
 |Section|Type|Roughly|
 |-|-|-|
-|0. Setup|Core|5 min|
-|1. Smells|Core|10 min|
-|2. Easy changes|Core|30 min|
-|3. Fuse the loops|Core|25 min|
-|4. Magic numbers and duplication|Core|30 min|
-|5. More ways to win|Core|20 min|
-|6. A smarter player|**Stretch goal, optional**|40+ min|
+|0. Setup|**Before the lab**|15 min, at home|
+|1. Smells|Core|5 min|
+|2. Easy changes|Core|15 min|
+|3. Fuse the loops|Core|20 min|
+|4. Magic numbers and duplication (4.1, 4.2)|Core|15 min|
+|4.3 and 5. More ways to win|If you have time|20 min|
+|6. A smarter player|Take-home, optional|40+ min|
+
+Each round of change → run tests → commit → swap takes about 3 minutes. If a step takes much longer, ask for help rather than pushing on.
 
 ---
 
-## 0. Setup
+## 0. Setup (before the lab)
 
-Build and run the tests **before changing anything**.
+Do this **before the lab starts**, on the laptop you'll bring. Only one of you needs to do it, but both should be there so you both know the setup. The first build downloads GoogleTest and takes a few minutes; in the lab there's no time for that.
 
-Do not type any code until you see green tests.
+You're ready when you can build, see the 14 tests pass, and see the RedGreenGo game open. Then close it; you'll start it again in the lab.
+
+Do not change any code until the lab starts.
 
 The project uses **CMake** and **GoogleTest**, and builds on Windows and Linux. You can use **Visual Studio 2022 or later**, **CLion**, **VS Code**, or the command line. There is no `.sln` file: open the repo **folder** in your IDE. GoogleTest downloads automatically the first time, so you need internet access.
 
@@ -113,6 +134,8 @@ All **14** tests should pass. **If they don't, ask for help before going any fur
 
 The helper only reads your files; it never changes them. When the lab starts, the game asks you to find the smells yourselves first (section 1) before it shows its own list.
 
+**At the start of the lab:** open the project, start the helper again (step 2), run all the tests, and click **Start Game**.
+
 > **Nothing happens when you run the tests?** Check the helper's terminal. If it says `doesn't save test results`, ask for help. If it says `No test results yet`, run **all** the tests through Test Explorer, the Testing view or **All CTest**: the game can't see a single test run from the ▶ next to a `TEST(...)`.
 
 ---
@@ -131,15 +154,9 @@ Look for these smells in particular:
 |**Long or tangled method**|A method doing several jobs at once|
 |**Primitive obsession**|Using an `int` or `char` for something that deserves its own type|
 
-📝 **Write down every smell you find**, with a line number, in a list like this:
+📝 **Write down the smells you find** in the table in [smells.md](smells.md), with its line number in `ConnectFour.cpp`. The first two rows are filled in as examples; add **at least three** of your own (RedGreenGo waits for three before it shows its list). Leave the **Fixed in** column empty for now. Commit `smells.md` before you change any code.
 
-```
-line 38  Duplicated code: the X check and the O check are identical apart from the letter
-line 11  Magic number: what does 5 mean?
-...
-```
-
-Keep the list. At the end of the lab you will tick off which change fixed each smell.
+At the end of the lab you will fill in **Fixed in** with the step that removed each smell.
 
 ---
 
@@ -147,24 +164,34 @@ Keep the list. At the end of the lab you will tick off which change fixed each s
 
 Every step in this section is **[Refactor]**. Do them **one at a time**. After **each** one:
 
-> ✅ Run the tests. Green? **Commit.** Red? **Undo** and try again more carefully.
+> ✅ Run the tests. Green? **Commit.** Red? **Undo** (`git restore Connect4-Tests`) and try again more carefully.
 
 Use your IDE's **rename** command to rename a name everywhere it's used, including in `test.cpp`: put the cursor on the name and press **Ctrl+R, Ctrl+R** (Visual Studio), **Shift+F6** (CLion) or **F2** (VS Code). Renaming by hand is how bugs creep in.
 
 - [ ] **2.1 [Refactor]** `move()` doesn't say what it does. Rename it to `bestMoveFor()`.
-- [ ] **2.2 [Refactor]** In `play()`, rename the parameters `c` → `column` and `p` → `player`. Do the same for `p` in `bestMoveFor()`.
-- [ ] **2.3 [Refactor]** In `bestMoveFor()`, the loop variable `i` isn't just a counter: it's a **column** the player might drop a piece into. Rename it to `column` (in both loops).
-- [ ] **2.4 [Refactor]** In `play()`, rename `r` → `row` and `b` → `newBoard`.
-- [ ] **2.5 [Refactor]** `-1` is a flag meaning "there is no move". Add a constant to the **`public:`** section of the class (the tests need to see it, so it can't go under `private:`) and use it in place of the `-1`. In `test.cpp`, change the `-1` in `FullBoardHasNoMove` to `ConnectFour::NoMove`.
+- [ ] **2.2 [Refactor]** Rename the one-letter variables in `play()` and `bestMoveFor()` to say what they *mean*. Use the rename command for each one, but commit them together:
+
+  |Where|Old|New|
+  |-|-|-|
+  |`play()` and `bestMoveFor()` parameters|`c`, `p`|`column`, `player`|
+  |`bestMoveFor()` loops|`i`|`column` (it's a column the player might drop a piece into)|
+  |`play()`|`r`, `b`|`row`, `newBoard`|
+  |`bestMoveFor()`|`t`|? (Hint: it's the game *after* something has happened.)|
+
+  Leave the `r` and `c` in `winner()` for now.
+
+- [ ] **2.3 [Refactor]** Two values in the code are really flags. Add a constant for each to the **`public:`** section of the class (the tests need to see them, so they can't go under `private:`):
 
   ```cpp
-  static constexpr int NoMove = -1;
+  static constexpr int NoMove = -1;     // "there is no move"
+  static constexpr char Empty = '-';    // "this cell is empty"
   ```
+
+  Use `NoMove` in place of the `-1`, and `Empty` everywhere `'-'` is used in `ConnectFour.cpp`. In `test.cpp`, change the `-1` in `FullBoardHasNoMove` to `ConnectFour::NoMove`.
 
   > Use `constexpr`, not plain `const`. A `static constexpr` member is a true compile-time constant and needs no separate definition in the `.cpp` file, even when a test macro like `EXPECT_EQ` takes it by reference.
 
-- [ ] **2.6 [Refactor]** `'-'` means "empty cell". Add a **public** constant `static constexpr char Empty = '-';` and use it everywhere `'-'` is used in `ConnectFour.cpp`.
-- [ ] **2.7 [Refactor]** The expression `r * 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
+- [ ] **2.4 [Refactor]** The expression `r * 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
 
   ```cpp
   int indexOf(int row, int column) const;
@@ -174,15 +201,13 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 
   > 💡 **Hint:** in `winner()` the expressions have an extra offset on the end, like `board[r * 7 + c + 1]`. The `+ 1` belongs to the column, so it becomes `board[indexOf(r, c + 1)]`.
 
-- [ ] **2.8 [Refactor]** In `bestMoveFor()`, `board[column] == Empty` checks only *one* cell, yet it is really asking a question about the whole column. 🤔 **Which cell is it checking, and why is that enough?** Extract it into a private method with a name that says what it *means*:
+- [ ] **2.5 [Refactor]** In `bestMoveFor()`, `board[column] == Empty` checks only *one* cell, yet it is really asking a question about the whole column. 🤔 **Which cell is it checking, and why is that enough?** Extract it into a private method with a name that says what it *means*:
 
   ```cpp
   bool canPlayIn(int column) const;
   ```
 
   Use it in **both** loops.
-
-- [ ] **2.9 [Refactor]** What does the object `t` represent? Give it a name that says so. (Hint: it's the game *after* something has happened.)
 
 
 ---
@@ -266,7 +291,15 @@ This **changes behaviour**: `defaultMove` is now the *last* playable column inst
 >
 > 🤔 The code still obeys the rules, so why are the tests failing? The tests check for **one particular** legal move when the rules allow **any** legal move. That's an **over-specified** test: it locks in a detail nobody cares about, and blocks a perfectly good change.
 >
-> **Fix the tests, not the code.** Rename `NoWinPicksFirstOpenColumn` to `NoWinPicksAValidColumn` and check the move is a real column, using `EXPECT_GE(move, 0)` and `EXPECT_LT(move, 7)` in place of `EXPECT_EQ`. In `SkipsFullColumn`, check the move is **not** column 0 (`EXPECT_NE`) and is a real column.
+> **Fix the tests, not the code.** Rename `NoWinPicksFirstOpenColumn` to `NoWinPicksAValidColumn`. Store the move in a variable, then check it's a real column:
+>
+> ```cpp
+> int move = game.bestMoveFor('X');
+> EXPECT_GE(move, 0);
+> EXPECT_LT(move, 7);
+> ```
+>
+> In `SkipsFullColumn`, do the same, and also check the move is **not** column 0 (`EXPECT_NE(move, 0)`).
 
 Green again? Commit.
 
@@ -288,7 +321,7 @@ The whole method should now fit in about 10 lines. Run the tests: green? Commit.
 
 ## 4. Magic numbers and duplication
 
-Every step in this section is **[Refactor]**.
+Every step in this section is **[Refactor]**. Steps 4.1 and 4.2 are core; 4.3 is for pairs who have time.
 
 Look back at your smell list. **Which part of the code smells worst now?**
 
@@ -316,7 +349,7 @@ Then look at `c < 4` in `winner()`.
 
 ### Step 4.2 [Refactor]: remove the X/O duplication
 
-Add a helper that reads a cell:
+First, rename `r` → `row` and `c` → `column` in `winner()`, so the code below matches yours. Then add a helper that reads a cell:
 
 ```cpp
 char cellAt(int row, int column) const;   // returns board[indexOf(row, column)]
@@ -332,7 +365,7 @@ if (first != Empty && cellAt(row, column + 1) == first && /* ... */)
 
 Half of `winner()` disappears. Run the tests: green? Commit.
 
-### Step 4.3 [Refactor]: turn "four in a row" into a loop
+### Step 4.3 [Refactor]: turn "four in a row" into a loop (if you have time)
 
 The `+1`, `+2`, `+3` offsets are really "step 1, 2, 3 along the line". Extract a method that checks **one line of `WinLength` cells**, starting at a cell and stepping in a direction:
 
@@ -352,6 +385,8 @@ bool isOnBoard(int row, int column) const;
 With that check in place, `winner()` can simply try **every** cell (`column < Columns`) and let `lineOwner()` reject lines that don't fit.
 
 > The test `WinnerTest.LineDoesNotWrapAroundTheEdge` protects you here. In the string, the last cell of one row sits right next to the first cell of the next. Forget the bounds check and that test goes red.
+>
+> In a Visual Studio **Debug** build you may see a crash ("string subscript out of range") instead of a red test: on the bottom row, a line without the bounds check reads past the end of the string. It's the same mistake, so the fix is the same.
 
 Run the tests: green? Commit.
 
@@ -359,7 +394,9 @@ Run the tests: green? Commit.
 
 ---
 
-## 5. More ways to win
+## 5. More ways to win (if you have time)
+
+This section needs step 4.3 done first.
 
 We're still not playing real Connect Four: you can also win **vertically** and on **both diagonals**.
 
@@ -399,7 +436,9 @@ In `winner()`, loop over these directions and call `lineOwner()` for each. Run t
 
 ---
 
-## 6. A smarter player
+## 6. A smarter player (take-home)
+
+This section is optional, for after the lab. It needs section 5 done first.
 
 So far, the player wins if it can and otherwise plays any legal move. It doesn't even notice when the opponent is about to win.
 
@@ -433,7 +472,9 @@ private:
 
 `Move` is a **value object**: it has getters but no setters, and once created it never changes.
 
-> 🤔 `none()` uses a bare `-1` for its column, the same magic number you replaced with `ConnectFour::NoMove` in step 2.5. Why can't `Move` use `ConnectFour::NoMove` here? (Look at which class is declared first.) Is that worth fixing?
+> Your `MoveTest` tests won't even compile until the `Move` class exists. For tests written first, a compile error counts as red: add the class, and they should go green.
+
+> 🤔 `none()` uses a bare `-1` for its column, the same magic number you replaced with `ConnectFour::NoMove` in step 2.3. Why can't `Move` use `ConnectFour::NoMove` here? (Look at which class is declared first.) Is that worth fixing?
 
 ### Step 6.2 [Refactor]: use `Move` inside `bestMoveFor()`
 
@@ -485,6 +526,8 @@ Put these tests in a new `ScoringTest` group. Write them **first** and watch the
 
 3. `WinBeatsBlock`: a board where X can win in one column **and** O threatens another. X should take the win.
 
+   > 🤔 This one probably passes straight away, before you change any code. Why? Is it still worth keeping?
+
 Now make them pass. You will probably want:
 
 * `char opponentOf(char player)`: `'X'` ↔ `'O'`
@@ -507,7 +550,7 @@ In `scoreMove()`: play the move, then ask whether the **opponent** can win next 
 
 ## Wrap-up
 
-Go back to your smell list from section 1. Next to each smell, write the step that removed it. Are any smells left?
+Go back to [smells.md](smells.md). In the **Fixed in** column, write the step that removed each smell (for example `2.3`), or `still there`. Are any smells left? Commit it.
 
 ---
 
@@ -518,9 +561,10 @@ Go back to your smell list from section 1. Next to each smell, write the step th
 
    1. **Collaboration:** What did you learn about working together with your partner? Were there any challenges you faced?
    2. **Communication:** How did you communicate your ideas to each other? What strategies were effective?
-   3. **Role distribution:** How did you decide who would take on which roles or tasks during the activity? Was this effective?
+   3. **Code quality:** What did you learn about writing better code through this exercise? How can you apply these lessons in the future?
    4. **Learning outcomes:** What new skills or concepts did you learn from your partner? Did their perspective change your understanding of the material?
    5. **Feedback:** How did you give and receive feedback during the pairing? Was there anything you found particularly helpful or unhelpful?
    6. **Time management:** How did you manage your time together? Were there any time-related challenges?
-   7. **Personal growth:** What did you discover about your own learning style or preferences through this pairing experience?
-   8. **Future improvements:** If you could do this pairing activity again, what would you change to make it more effective?
+   7. **Future improvements:** If you could do this pairing activity again, what would you change to make it more effective?
+   8. **RedGreenGo:** How did the RedGreenGo app affect the way you worked? Did its prompts to run the tests, commit or undo change your habits? Was there a moment where it helped, or got in the way?
+   
