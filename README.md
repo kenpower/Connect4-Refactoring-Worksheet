@@ -41,7 +41,16 @@ The board is a `std::string` of 42 characters: 6 rows of 7, **top row first**. `
  row 5    XXXX---      <- bottom: X has won
 ```
 
-In the tests, the `rows(...)` helper lets you write boards exactly like this.
+In the tests, the `rows(...)` helper lets you write boards exactly like this:
+
+```
+   rows("-------",
+        "-------",
+        "-------",
+        "-------",
+        "OOO----",
+        "XXXX---")
+```
 
 ### Working as a pair
 
