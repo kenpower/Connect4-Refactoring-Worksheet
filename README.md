@@ -87,7 +87,7 @@ All **14** tests should pass. **If they don't, ask for help before going any fur
 
 \---
 
-## 1\. Smells 🔍
+## 1\. Smells 
 
 A *smell* is something in the code that makes it harder to understand or change. Read all of `ConnectFour.cpp` together. For each method, can you say in one sentence what it does? For each loop, can you say what it loops over *in game terms* (rows? columns? cells?)
 
@@ -113,7 +113,7 @@ Keep the list. At the end of the lab you will tick off which change fixed each s
 
 \---
 
-## 2\. Easy changes 🔧
+## 2\. Easy changes 
 
 Do these **one at a time**. After **each** one:
 
@@ -155,7 +155,7 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
 
   \---
 
-  ## 3\. Fuse the loops 🔧 then 🏗️
+  ## 3\. Fuse the loops 
 
   After the easy changes, `bestMoveFor()` should look roughly like this:
 
@@ -178,11 +178,11 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
 
   Both loops visit the same seven columns. **Fusing** them means combining them into one loop. You can't just paste one into the other, though, because **both loops `return` early**. A loop that returns early stops the code after it from ever running, so moving it changes behaviour.
 
-  > 💡 \*\*When is it safe to fuse two loops?\*\* When they loop over the same range, and \*\*neither\*\* loop exits early or depends on something the other loop works out.
+  >  \*\*When is it safe to fuse two loops?\*\* When they loop over the same range, and \*\*neither\*\* loop exits early or depends on something the other loop works out.
 
   So first remove the early exits, one loop at a time. **Tests must stay green after every step.**
 
-  ### Step 3.1 🔧: loop 2 records its answer instead of returning it
+  ### Step 3.1: loop 2 records its answer instead of returning it
 
 ```cpp
     int defaultMove = NoMove;
@@ -195,7 +195,7 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
 
   The `defaultMove == NoMove` check keeps the **first** playable column, exactly as the old `return` did. Run the tests: green? Commit.
 
-  ### Step 3.2 🔧: loop 1 does the same
+  ### Step 3.2: loop 1 does the same
 
 ```cpp
     int winningMove = NoMove;
@@ -247,13 +247,10 @@ In Visual Studio, put the cursor on a name and press **Ctrl+R, Ctrl+R** to renam
 
   The whole method should now fit in about 10 lines. Run the tests: green? Commit.
 
-  > 📌 \*\*Checkpoint 2.\*\*
+  
+  ## 4. Magic numbers and duplication 
 
-  \---
-
-  ## 4\. Magic numbers and duplication 🔧
-
-  Look back at your smell list. 🤔 **Which part of the code smells worst now?**
+  Look back at your smell list.  **Which part of the code smells worst now?**
 
   It is probably `winner()`. It's full of magic numbers, and the `'X'` check and the `'O'` check are copies of each other.
 
@@ -314,15 +311,12 @@ bool isOnBoard(int row, int column) const;
 
   With that check in place, `winner()` can simply try **every** cell (`column < Columns`) and let `lineOwner()` reject lines that don't fit.
 
-  > 🛡️ The test `WinnerTest.LineDoesNotWrapAroundTheEdge` protects you here. In the string, the last cell of one row sits right next to the first cell of the next. Forget the bounds check and that test goes red.
+  > The test `WinnerTest.LineDoesNotWrapAroundTheEdge` protects you here. In the string, the last cell of one row sits right next to the first cell of the next. Forget the bounds check and that test goes red.
 
   Run the tests: green? Commit.
 
-  > 📌 \*\*Checkpoint 3a.\*\*
-
-  \---
-
-  ## 5\. More ways to win 🏗️
+  
+  ## 5\. More ways to win 
 
   We're still not playing real Connect Four: you can also win **vertically** and on **both diagonals**.
 
@@ -356,13 +350,12 @@ In `winner()`, loop over these directions and call `lineOwner()` for each. Run t
 
 > 🤔 \*\*Reflect:\*\* How many lines did you have to change to add three new ways to win? How many would it have taken in the original code?
 >
-> 🤔 Your teacher now wants \*\*Connect Five\*\* on a \*\*9 × 7\*\* board. What would you change?
+> 🤔 Your users now wants \*\*Connect Five\*\* on a \*\*9 × 7\*\* board. What would you change?
 
-> 📌 \*\*Checkpoint 3b.\*\*
 
 \---
 
-## 6\. A smarter player: Stretch ⭐
+## 6\. A smarter player:
 
 So far, the player wins if it can and otherwise plays any legal move. It doesn't even notice when the opponent is about to win.
 
@@ -396,7 +389,7 @@ private:
 
 `Move` is a **value object**: it has getters but no setters, and once created it never changes.
 
-### Step 6.2 🔧: use `Move` inside `bestMoveFor()`
+### Step 6.2 : use `Move` inside `bestMoveFor()`
 
 Add a public method `int scoreMove(int column, char player) const`. For now it returns **100** if the move wins and **50** otherwise.
 
@@ -414,7 +407,7 @@ return best.column();
 
 Run the tests: green? Commit.
 
-### Step 6.3 🏗️: don't hand the opponent a win
+### Step 6.3 : don't hand the opponent a win
 
 Write these tests **first** and watch them fail:
 
@@ -457,7 +450,6 @@ Put these in a new `ScoringTest` group.
 
   > 🤔 You never wrote a rule that says "block the opponent". So why does `BlocksOpponentWin` pass? (Look at what every \*other\* column scores.)
 
-  > 📌 \*\*Checkpoint 4.\*\*
 
   ### Further stretch (pick any)
 
