@@ -167,7 +167,9 @@ Every step in this section is **[Refactor]**. Do them **one at a time**. After *
 Use your IDE's **rename** command to rename a name everywhere it's used, including in `test.cpp`: put the cursor on the name and press **Ctrl+R, Ctrl+R** (Visual Studio), **Shift+F6** (CLion) or **F2** (VS Code). Renaming by hand is how bugs creep in.
 
 - [ ] **2.1 [Refactor]** `move()` doesn't say what it does. Rename it to `bestMoveFor()`.
-- [ ] **2.2 [Refactor]** Rename the one-letter variables in `play()` and `bestMoveFor()` to say what they *mean*. Use the rename command for each one, but commit them together:
+- [ ] **2.2 [Refactor]** Rename the one-letter variables in `play()` and `bestMoveFor()`.
+
+  Give each one a name that says what it *means*. Use the rename command for each one, but commit them together:
 
   |Where|Old|New|
   |-|-|-|
@@ -178,7 +180,9 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 
   Leave the `r` and `c` in `winner()` for now.
 
-- [ ] **2.3 [Refactor]** Two values in the code are really flags. Add a constant for each to the **`public:`** section of the class (the tests need to see them, so they can't go under `private:`):
+- [ ] **2.3 [Refactor]** Name the two flag values: add constants `NoMove` and `Empty`.
+
+  Two values in the code are really flags. Add a constant for each to the **`public:`** section of the class (the tests need to see them, so they can't go under `private:`):
 
   ```cpp
   static constexpr int NoMove = -1;     // "there is no move"
