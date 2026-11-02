@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "ConnectFour.h"
 
 ConnectFour::ConnectFour(const std::string& s) : board(s) {}

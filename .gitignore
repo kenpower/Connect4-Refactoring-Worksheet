@@ -361,3 +361,15 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# CMake build folders (command line, Visual Studio, CLion, VS Code)
+build/
+out/
+cmake-build-*/
+CMakeUserPresets.json
+.idea/
+.vscode/
+
+# classroom50 autograder output
+build-autograde/
+result.json
+release-body.md

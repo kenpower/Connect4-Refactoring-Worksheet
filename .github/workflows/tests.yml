@@ -1,0 +1,28 @@
+name: Tests
+
+# Builds the project and runs the tests on every push, using the same script
+# classroom50 uses for grading. The score appears in the run's Summary.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and run tests
+        run: python3 classroom50/autograder.py
+
+      - name: Show score
+        if: always()
+        run: |
+          if [ -f release-body.md ]; then
+            cat release-body.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Fail if any check failed
+        run: |
+          python3 -c "import json, sys; r = json.load(open('result.json')); sys.exit(r['score'] != r['max-score'])"

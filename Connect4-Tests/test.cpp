@@ -1,6 +1,5 @@
-#include "pch.h"
 // Tests for ConnectFour, using GoogleTest.
-// Build and run: see the "Setup" section of LAB.md.
+// Build and run: see BUILD.md.
 #include "ConnectFour.h"
 #include <gtest/gtest.h>
 #include <string>
