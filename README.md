@@ -28,8 +28,6 @@ You will switch between two kinds of work. Every step that changes code is label
 
 Never wear both hats at once. If you are refactoring and a test goes red, you have changed behaviour by accident: **undo** and take a smaller step.
 
-> 🎮 **Using RedGreenGo?** Before every **[Develop]** step, click **Changing what the code does on purpose?** and say what will change. Otherwise the game holds you when tests fail or change.
-
 ### How the board is stored
 
 The board is a `std::string` of 42 characters: 6 rows of 7, **top row first**. `'-'` is empty; `'X'` and `'O'` are pieces. Pieces drop to the lowest empty cell in a column.
@@ -132,7 +130,7 @@ All **14** tests should pass. **If they don't, ask for help before going any fur
 3. **Run all the tests** (as above). The game opens in your browser at **http://127.0.0.1:8000/**. Always play there, not on the github.io page, which can't see your code.
 4. Type both your names and click **Start Game**.
 
-The helper only reads your files; it never changes them. When the lab starts, the game asks you to find the smells yourselves first (section 1) before it shows its own list.
+The helper only reads your files; it never changes them. When the lab starts, the game asks you to find the smells yourselves first (section 1). Then it walks you through this worksheet one step at a time: each card shows the step to do now, with the full text from this README underneath, and switches to the **[Develop]** hat for you when a step needs it. You'll mostly follow the game and come back here for the reflection questions and if you get stuck.
 
 **At the start of the lab:** open the project, start the helper again (step 2), run all the tests, and click **Start Game**.
 
@@ -191,7 +189,9 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 
   > Use `constexpr`, not plain `const`. A `static constexpr` member is a true compile-time constant and needs no separate definition in the `.cpp` file, even when a test macro like `EXPECT_EQ` takes it by reference.
 
-- [ ] **2.4 [Refactor]** The expression `r * 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
+- [ ] **2.4 [Refactor]** Extract `r * 7 + c` into a private method `indexOf()`.
+
+  The expression `r * 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
 
   ```cpp
   int indexOf(int row, int column) const;
@@ -201,7 +201,9 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 
   > 💡 **Hint:** in `winner()` the expressions have an extra offset on the end, like `board[r * 7 + c + 1]`. The `+ 1` belongs to the column, so it becomes `board[indexOf(r, c + 1)]`.
 
-- [ ] **2.5 [Refactor]** In `bestMoveFor()`, `board[column] == Empty` checks only *one* cell, yet it is really asking a question about the whole column. 🤔 **Which cell is it checking, and why is that enough?** Extract it into a private method with a name that says what it *means*:
+- [ ] **2.5 [Refactor]** Extract the "is this column full?" check into a private method `canPlayIn()`.
+
+  In `bestMoveFor()`, `board[column] == Empty` checks only *one* cell, yet it is really asking a question about the whole column. 🤔 **Which cell is it checking, and why is that enough?** Extract it into a private method with a name that says what it *means*:
 
   ```cpp
   bool canPlayIn(int column) const;
@@ -285,8 +287,6 @@ The rules only say *"if you can't win, play **any** legal move"*. We don't care 
 
 This **changes behaviour**: `defaultMove` is now the *last* playable column instead of the first. Run the tests.
 
-> 🎮 **Using RedGreenGo?** Before you delete the guard, click **Changing what the code does on purpose?** and say what will change. The game then lets tests fail (and lets you change them) until every test passes again. Then you commit, and the next round is refactoring again.
-
 > ⚠️ **Two tests are expected to go red here:** `ChooseMoveTest.NoWinPicksFirstOpenColumn` and `ChooseMoveTest.SkipsFullColumn`. **Don't undo.**
 >
 > 🤔 The code still obeys the rules, so why are the tests failing? The tests check for **one particular** legal move when the rules allow **any** legal move. That's an **over-specified** test: it locks in a detail nobody cares about, and blocks a perfectly good change.
@@ -337,7 +337,7 @@ static constexpr int Columns = 7;
 static constexpr int WinLength = 4;
 ```
 
-Replace the magic numbers **one kind at a time**, running the tests in between:
+Replace the magic numbers **one kind at a time**. Run the tests and commit after each kind (in RedGreenGo, choose **Committed, but step 4.1 isn't finished yet** until the last one):
 
 * every `7` → `Columns`
 * the `6` in `winner()` → `Rows`
@@ -402,7 +402,7 @@ We're still not playing real Connect Four: you can also win **vertically** and o
 
 ### Step 5.1 [Develop]: tests first
 
-Write these four tests in the `WinnerTest` group. Use the `rows(...)` helper so you can *see* each board. **Run them and watch them fail** (all except the last one, which should already pass. Why?)
+Write these four tests in the `WinnerTest` group. Use the `rows(...)` helper so you can *see* each board. **Run them and watch them fail** (all except the last one, which should already pass. Why?) Don't commit yet: with failing tests this isn't a green step. Go straight on to 5.2 and commit when everything passes (in RedGreenGo, then press **Skip** past 5.2).
 
 |Test|Board idea|Expect|
 |-|-|-|
