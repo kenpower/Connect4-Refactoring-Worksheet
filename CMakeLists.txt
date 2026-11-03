@@ -21,6 +21,22 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+# RedGreenGo: fetch the latest rgg_server.py each time CMake configures (the IDE does that
+# when it opens the folder). Offline, the copy already here is kept.
+option(RGG_UPDATE_HELPER "Download the latest rgg_server.py when configuring" ON)
+if(RGG_UPDATE_HELPER)
+  file(DOWNLOAD https://kenpower.github.io/RedGreenGoWeb/build/rgg_server.py
+       ${CMAKE_BINARY_DIR}/rgg_server.py.download TIMEOUT 10 STATUS rgg_status)
+  list(GET rgg_status 0 rgg_code)
+  if(rgg_code EQUAL 0)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    ${CMAKE_BINARY_DIR}/rgg_server.py.download ${CMAKE_SOURCE_DIR}/rgg_server.py)
+  else()
+    list(GET rgg_status 1 rgg_error)
+    message(WARNING "RedGreenGo: couldn't update rgg_server.py (${rgg_error}); keeping the copy here")
+  endif()
+endif()
+
 add_executable(connect4_tests
   Connect4-Tests/ConnectFour.cpp
   Connect4-Tests/test.cpp
