@@ -10,9 +10,9 @@ The first two rows are examples.
 |-|-|-|-|
 |23|Poor name|`t` doesn't say what it is; it's the game *after* a move is played||
 |38–43|Duplicated code|The X check and the O check are identical apart from the letter||
-| | | | |
-| | | | |
-| | | | |
+|12 |Magic number|`-` is a magic lteral; it should be a named constant||
+| 12|MAgic number|`7` is a magic number; it should be a named constant||
+| 38|complex expression|The expression is hard to read and understand||
 | | | | |
 | | | | |
 | | | | |

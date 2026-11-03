@@ -75,7 +75,7 @@ rows("-------",
 
 ### Time guide
 
-The lab is **one hour**. Setup happens **before** the lab.
+The lab is **one hour** not including setup.
 
 |Section|Type|Roughly|
 |-|-|-|
@@ -91,13 +91,13 @@ Each round of change → run tests → commit → swap takes about 3 minutes. If
 
 ---
 
-## 0. Setup (before the lab)
+## 0. Setup 
 
-Do this **before the lab starts**, on the laptop you'll bring. Only one of you needs to do it, but both should be there so you both know the setup. The first build downloads GoogleTest and takes a few minutes; in the lab there's no time for that.
+Clone your repo and open it in your IDE. Build it and run the tests.
 
-You're ready when you can build, see the 14 tests pass, and see the RedGreenGo game open. Then close it; you'll start it again in the lab.
+You're ready when you can build, see the 14 tests pass, and see the RedGreenGo game open. 
 
-Do not change any code until the lab starts.
+Do not change any code until you see all passing tests.
 
 The project uses **CMake** and **GoogleTest**, and builds on Windows and Linux. You can use **Visual Studio 2022 or later**, **CLion**, **VS Code**, or the command line. There is no `.sln` file: open the repo **folder** in your IDE. GoogleTest downloads automatically the first time, so you need internet access.
 
@@ -127,7 +127,7 @@ All **14** tests should pass. **If they don't, ask for help before going any fur
    ```
 
    On Windows, if that opens the Microsoft Store or says Python isn't found, use `py rgg_server.py`. On Linux, use `python3 rgg_server.py`. It reads the class code from the top of this README, so you don't need to type it.
-3. **Run all the tests** (as above). The game opens in your browser at **http://127.0.0.1:8000/**. Always play there, not on the github.io page, which can't see your code.
+3. The game opens in your browser at **http://127.0.0.1:8000/**. 
 4. Type both your names and click **Start Game**.
 
 The helper only reads your files; it never changes them. When the lab starts, the game asks you to find the smells yourselves first (section 1). Then it walks you through this worksheet one step at a time: each card shows the step to do now, with the full text from this README underneath, and switches to the **[Develop]** hat for you when a step needs it. You'll mostly follow the game and come back here for the reflection questions and if you get stuck.
