@@ -16,4 +16,5 @@ public:
 
 private:
     std::string board;
+    const int NUM_COLS = 7;
 };
