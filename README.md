@@ -4,6 +4,9 @@ Refactorings: Rename Function, Rename Variable, Replace Magic Number with Consta
 
 # Refactoring Lab: Connect Four
 
+> [!NOTE]
+> Note: This project now uses CMake, supporting Windows and Linux development in IDEs such as Visual Studio and CLion. Unlike previous Visual Studio-only projects, it no longer includes a Visual Studio solution file.
+
 You are given a small, working, **smelly** implementation of Connect Four in `ConnectFour.h` / `ConnectFour.cpp`, with tests in `test.cpp`.
 
 It works, but it is hard to read and hard to change.
@@ -93,11 +96,12 @@ Each round of change → run tests → commit → swap takes about 3 minutes. If
 
 ## 0. Setup 
 
-Clone your repo and open it in your IDE. Build it and run the tests.
+Clone your repo and open it in your IDE. *Build it and run the tests*.
 
 You're ready when you can build, see the 14 tests pass, and see the RedGreenGo game open. 
 
-Do not change any code until you see all passing tests.
+> [!WARNING]
+> Do not change *any* code until you see all passing tests.
 
 The project uses **CMake** and **GoogleTest**, and builds on Windows and Linux. You can use **Visual Studio 2022 or later**, **CLion**, **VS Code**, or the command line. There is no `.sln` file: open the repo **folder** in your IDE. GoogleTest downloads automatically the first time, so you need internet access.
 
