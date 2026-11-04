@@ -169,6 +169,8 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 - [ ] **2.1 [Refactor]** `move()` doesn't say what it does. Rename it to `bestMoveFor()`.
 - [ ] **2.2 [Refactor]** Rename the one-letter variables in `play()` and `bestMoveFor()`.
 
+  Leave the `r` and `c` in `winner()` for now.
+
   Give each one a name that says what it *means*. Use the rename command for each one, but commit them together:
 
   |Where|Old|New|
@@ -177,8 +179,6 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
   |`bestMoveFor()` loops|`i`|`column` (it's a column the player might drop a piece into)|
   |`play()`|`r`, `b`|`row`, `newBoard`|
   |`bestMoveFor()`|`t`|? (Hint: it's the game *after* something has happened.)|
-
-  Leave the `r` and `c` in `winner()` for now.
 
 - [ ] **2.3 [Refactor]** Name the two flag values: add constants `NoMove` and `Empty`.
 
@@ -193,9 +193,9 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 
   > Use `constexpr`, not plain `const`. A `static constexpr` member is a true compile-time constant and needs no separate definition in the `.cpp` file, even when a test macro like `EXPECT_EQ` takes it by reference.
 
-- [ ] **2.4 [Refactor]** Extract `r * 7 + c` into a private method `indexOf()`.
+- [ ] **2.4 [Refactor]** Extract `r * NUM_COLS + c` into a private method `indexOf()`.
 
-  The expression `r * 7 + c` (row × width + column) appears **many** times. Extract it into a private method:
+  The expression `r * NUM_COLS + c` (row × width + column) appears **many** times. Extract it into a private method:
 
   ```cpp
   int indexOf(int row, int column) const;
@@ -203,7 +203,7 @@ Use your IDE's **rename** command to rename a name everywhere it's used, includi
 
   and use it in `play()` and `winner()`.
 
-  > 💡 **Hint:** in `winner()` the expressions have an extra offset on the end, like `board[r * 7 + c + 1]`. The `+ 1` belongs to the column, so it becomes `board[indexOf(r, c + 1)]`.
+  > 💡 **Hint:** in `winner()` the expressions have an extra offset on the end, like `board[r * NUM_COLS + c + 1]`. The `+ 1` belongs to the column, so it becomes `board[indexOf(r, c + 1)]`.
 
 - [ ] **2.5 [Refactor]** Extract the "is this column full?" check into a private method `canPlayIn()`.
 
@@ -245,11 +245,11 @@ Both loops visit the same seven columns. **Fusing** them means combining them in
 
 So first remove the early exits, one loop at a time. **Tests must stay green after every step.**
 
-### Step 3.1 [Refactor]: loop 2 records its answer instead of returning it
+### Step 3.1 [Refactor]: make loop 2 store its answer instead of returning it
 
 ```cpp
 int defaultMove = NoMove;
-for (int column = 0; column < 7; column++) {
+for (int column = 0; column < NUM_COLS; column++) {
     if (canPlayIn(column) && defaultMove == NoMove)
         defaultMove = column;
 }
@@ -258,11 +258,11 @@ return defaultMove;
 
 The `defaultMove == NoMove` check keeps the **first** playable column, exactly as the old `return` did. Run the tests: green? Commit.
 
-### Step 3.2 [Refactor]: loop 1 does the same
+### Step 3.2 [Refactor]: make loop 1 store its answer too
 
 ```cpp
 int winningMove = NoMove;
-for (int column = 0; column < 7; column++) {
+for (int column = 0; column < NUM_COLS; column++) {
     if (canPlayIn(column) && winningMove == NoMove) {
         ConnectFour afterMove = play(column, player);
         if (afterMove.winner() == player)
@@ -281,11 +281,11 @@ return defaultMove;
 
 🤔 The original code had a third line, `return NoMove;`. Why don't we need it? Run the tests: green? Commit.
 
-### Step 3.3 [Refactor]: fuse
+### Step 3.3 [Refactor]: merge the two loops into one
 
-The two loops now have the same header and no early exits, so it's safe. Move the body of loop 2 into loop 1 and delete loop 2. Run the tests: green? Commit.
+The two loops now have the same header and no early exits, so it's safe to fuse them (Merge Loops). Move the body of loop 2 into loop 1, after loop 1's own `if`, and delete loop 2. Run the tests: green? Commit.
 
-### Step 3.4 [Develop]: change of hat. Simplify the default move
+### Step 3.4 [Develop]: simplify the default move (this changes behaviour)
 
 The rules only say *"if you can't win, play **any** legal move"*. We don't care **which** one. So the `defaultMove == NoMove` guard is doing work nobody asked for. **Delete it** (keep `canPlayIn(column)`).
 
@@ -307,16 +307,16 @@ This **changes behaviour**: `defaultMove` is now the *last* playable column inst
 
 Green again? Commit.
 
-### Step 3.5 [Refactor]: one variable, one exit
+### Step 3.5 [Refactor]: use one result variable and one return
 
-You now have two variables and some `if`s to choose between them. Simplify to a **single** `result` variable:
+You now have two variables and some `if`s to choose between them. Simplify to a **single** `result` variable.
+
+> ⚠️ **Start `result` at `NoMove`**, not at `0`. On a full board no column is playable, so the loop never sets `result`, and the method must still return "no move". If you start it at `0` (or leave it uninitialised), `ChooseMoveTest.FullBoardHasNoMove` goes red.
 
 * If a column is not playable, skip it (`continue`).
 * If playing the column wins, you can `return column;` straight away. Nothing beats a win, so stopping early is fine.
 * Otherwise, remember it: `result = column;`.
 * After the loop, `return result;`.
-
-> ⚠️ **Start `result` at `NoMove`**, not at `0`. On a full board no column is playable, so the loop never sets `result`, and the method must still return "no move". If you start it at `0` (or leave it uninitialised), `ChooseMoveTest.FullBoardHasNoMove` goes red.
 
 The whole method should now fit in about 10 lines. Run the tests: green? Commit.
 
@@ -331,7 +331,7 @@ Look back at your smell list. **Which part of the code smells worst now?**
 
 It is probably `winner()`. It's full of magic numbers, and the `'X'` check and the `'O'` check are copies of each other.
 
-### Step 4.1 [Refactor]: name the numbers
+### Step 4.1 [Refactor]: replace the magic numbers with named constants
 
 Add these to the **`public:`** section of the class, next to `NoMove` (public, so the tests can use them too):
 
@@ -343,7 +343,7 @@ static constexpr int WinLength = 4;
 
 Replace the magic numbers **one kind at a time**. Run the tests and commit after each kind (in RedGreenGo, choose **Committed, but step 4.1 isn't finished yet** until the last one):
 
-* every `7` → `Columns`
+* every `7` → `Columns`. `NUM_COLS` is a 7 too: use `Columns` wherever it's used, then delete `NUM_COLS`
 * the `6` in `winner()` → `Rows`
 * the `5` in `play()` → ?  (*It's the bottom row. How do you write that using `Rows`?*)
 
